@@ -11,6 +11,7 @@ class UriparserConan(ConanFile):
     exports_sources = ["CMakeLists.txt", "patches/**"]
     generators = "cmake"
     license = "BSD-3-Clause"
+    sha1_revision="a50e789733c105765fbae413f040c2178added34"
     settings = "os", "arch", "compiler", "build_type"
     options = {
         "shared": [True, False],
@@ -46,9 +47,15 @@ class UriparserConan(ConanFile):
         del self.settings.compiler.libcxx
 
     def source(self):
-        tools.get(**self.conan_data["sources"][self.version])
-        extracted_folder = self.name + "-" + self.version
-        os.rename(extracted_folder, self._source_subfolder)
+        if self.version != "20200323":
+            tools.get(**self.conan_data["sources"][self.version])
+            extracted_folder = self.name + "-" + self.version
+            os.rename(extracted_folder, self._source_subfolder)
+        else:
+            git = tools.Git(folder=self._source_subfolder)
+            git.clone("https://github.com/uriparser/uriparser", "master")
+            self.run("cd {src} && git reset --hard {revision}".format(src=self._source_subfolder, revision=self.sha1_revision))
+            self.run("cd {src} && git submodule update --init --recursive".format(src=self._source_subfolder))
 
     def _configure_cmake(self):
         if self._cmake:

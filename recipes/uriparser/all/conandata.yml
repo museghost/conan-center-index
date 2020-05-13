@@ -6,3 +6,7 @@ patches:
   "0.9.3":
     - patch_file: "patches/0001-win32-no-version-suffix-for-implib.patch"
       base_path: "source_subfolder"
+  "20200323":
+    - patch_file: "patches/0000-win32-no-version-suffix-for-implib.patch"
+      base_path: "source_subfolder"
+
